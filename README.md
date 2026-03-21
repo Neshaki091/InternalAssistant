@@ -2,32 +2,32 @@
 
 ![Internal Assistant Banner](./assets/banner.png)
 
-**Internal AI Assistant** là giải pháp BaaS (Backend-as-a-Service) toàn diện, giúp doanh nghiệp xây dựng một trợ lý AI thông minh, có khả năng nhúng trực tiếp vào các hệ thống nội bộ để hỗ trợ nhân viên tra cứu thông tin và thực hiện các quy trình tự động hóa một cách nhanh chóng.
+**Internal AI Assistant** is a comprehensive BaaS (Backend-as-a-Service) solution that empowers companies to build intelligent AI assistants, embeddable directly into internal systems to help employees retrieve information and execute automated workflows instantly.
 
 ---
 
-## 📌 Giới thiệu dự án
+## 📌 Project Introduction
 
-Dự án này được xây dựng trong khuôn khổ Hackathon với mục tiêu thu hẹp khoảng cách giữa **kiến thức tĩnh** (tài liệu, chính sách) và **hành động thực tế** (xin nghỉ phép, gửi email, cập nhật báo cáo). 
+This project was built during a Hackathon with the goal of bridging the gap between **static knowledge** (documents, policies) and **real-world action** (requesting leave, sending emails, updating reports). 
 
-Thay vì chỉ trả lời câu hỏi, **Internal AI Assistant** có thể hiểu ý định của người dùng và kích hoạt các quy trình làm việc (workflows) trên các công cụ mà doanh nghiệp đang sử dụng như Google Sheets, Gmail thông qua n8n.
-
----
-
-## 🚀 Tính năng nổi bật
-
-- 🧠 **Anti-Hallucination RAG (Knowledge Base):** Trả lời câu hỏi dựa trên tài liệu nội bộ của công ty với độ chính xác cao, hạn chế tối đa việc AI "nói dối".
-- ⚡ **Action-Oriented Intent Parsing:** Tự động nhận diện và phân loại ý định người dùng (ví dụ: "Tôi muốn xin nghỉ phép từ ngày 25 đến 27") để kích hoạt quy trình tương ứng.
-- 🔗 **Workflow Automation (n8n Integration):** Kết nối trực tiếp với n8n để thực hiện các hành động thực tế như cập nhật bảng tính, gửi email tự động.
-- 🛡️ **AI Content Moderation:** Hệ thống giám sát âm thầm, phát hiện và ngăn chặn các nội dung độc hại hoặc nhạy cảm trong cuộc hội thoại.
-- 🏢 **Multi-Tenant Admin Dashboard:** Cho phép quản lý nhiều khách hàng (clientId), mỗi khách hàng có cơ sở kiến thức và cấu hình riêng biệt.
-- 🔌 **Zero-friction Integration:** Nhúng trợ lý vào bất kỳ trang web nào chỉ với một thẻ `<script>`.
+Instead of just answering questions, **Internal AI Assistant** understands user intent and triggers workflows across the tools your company already uses, like Google Sheets and Gmail via n8n.
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## 🚀 Key Features
 
-Dự án được xây dựng với kiến trúc hiện đại, tập trung vào hiệu suất và khả năng mở rộng:
+- 🧠 **Anti-Hallucination RAG (Knowledge Base):** Answers questions based strictly on internal company documents with high accuracy, minimizing AI hallucinations.
+- ⚡ **Action-Oriented Intent Parsing:** Automatically identifies and classifies user intents (e.g., "I want to take a leave from March 25 to 27") to trigger the corresponding workflow.
+- 🔗 **Workflow Automation (n8n Integration):** Connects directly with n8n to execute real-world actions like updating spreadsheets or sending automated emails.
+- 🛡️ **AI Content Moderation:** A silent monitoring system that detects and prevents toxic or sensitive content within conversations.
+- 🏢 **Multi-Tenant Admin Dashboard:** Manage multiple clients (clientId), each with its own isolated knowledge base and configurations.
+- 🔌 **Zero-friction Integration:** Embed the assistant into any website with a single `<script>` tag.
+
+---
+
+## 🛠️ Technology Stack
+
+The project is built with a modern architecture focused on performance and scalability:
 
 - **AI Engine:** Google Gemini API (`gemma-3-1b-it` & `gemini-embedding-001`).
 - **Backend:** Node.js, Express.js.
@@ -69,40 +69,39 @@ Get your unique `<script>` tag from the dashboard and embed it into any intranet
 
 ---
 
-
-## 📂 Cấu trúc thư mục
+## 📂 Project Structure
 
 ```text
 InternalAssistant/
-├── assets/             # Tài nguyên hình ảnh, banner
-├── portal/             # Giao diện quản trị (Admin Dashboard)
-├── sdk/                # Mã nguồn của widget nhúng (agent.js, agent.css)
-├── src/                # Logic xử lý chính (Backend)
-│   ├── routes/         # Định nghĩa các API endpoints
-│   ├── workflows/      # Cấu hình các quy trình tự động hóa
-│   ├── ragService.js   # Xử lý Retrieval-Augmented Generation
-│   └── intentParser.js # Phân tích ý định người dùng
-├── scripts/            # Các script hỗ trợ (ingest dữ liệu)
-├── n8n_workflow/       # File export các quy trình n8n
-└── server.js           # File khởi chạy server chính
+├── assets/             # Image assets, banners, and screenshots
+├── portal/             # Admin Dashboard interface
+├── sdk/                # Source code for the embeddable widget (agent.js, agent.css)
+├── src/                # Core logic (Backend)
+│   ├── routes/         # API endpoint definitions
+│   ├── workflows/      # Workflow automation configurations
+│   ├── ragService.js   # RAG (Retrieval-Augmented Generation) logic
+│   └── intentParser.js # User intent analysis logic
+├── scripts/            # Utility scripts (data ingestion, etc.)
+├── n8n_workflow/       # Exported n8n workflow files
+└── server.js           # Main server entry point
 ```
 
 ---
 
-## ⚙️ Hướng dẫn cài đặt
+## ⚙️ Installation Guide
 
-### 1. Yêu cầu hệ thống
-- Node.js (v18 trở lên)
-- Tài khoản Supabase
+### 1. System Requirements
+- Node.js (v18 or higher)
+- Supabase account
 - Gemini API Key
 
-### 2. Cài đặt các phụ thuộc
+### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-### 3. Cấu hình biến môi trường
-Tạo file `.env` từ `.env.example` và điền đầy đủ các thông tin:
+### 3. Environment Variables
+Create a `.env` file from `.env.example` and fill in the required information:
 ```env
 PORT=3000
 SUPABASE_URL=your_supabase_url
@@ -111,22 +110,22 @@ GEMINI_API_KEY=your_gemini_api_key
 N8N_WEBHOOK_URL=your_n8n_webhook_url
 ```
 
-### 4. Khởi chạy dự án
+### 4. Run the Project
 ```bash
-# Chế độ phát triển
+# Development mode
 npm run dev
 
-# Chế độ Production
+# Production mode
 npm start
 ```
 
 ---
 
-## 🖥️ Cách sử dụng
+## 🖥️ How to Use
 
-1. **Ingest dữ liệu:** Sử dụng script trong thư mục `scripts` để tải các chính sách công ty lên Vector Database.
-2. **Quản trị:** Truy cập vào `portal/index.html` để quản lý các client, theo dõi log chat và cấu hình hệ thống.
-3. **Nhúng Widget:** Thêm đoạn mã sau vào trang web của bạn:
+1. **Ingest Data:** Use the scripts in the `scripts` directory to upload company policies to the Vector Database.
+2. **Administration:** Access `portal/index.html` to manage clients, monitor chat logs, and configure the system.
+3. **Embed Widget:** Add the following code snippet to your website:
    ```html
    <link rel="stylesheet" href="path/to/sdk/agent.css">
    <script src="path/to/sdk/agent.js" data-client-id="YOUR_CLIENT_ID"></script>
@@ -134,9 +133,9 @@ npm start
 
 ---
 
-## 🌟 Đội ngũ phát triển
+## 🌟 Development Team
 
-Dự án được thực hiện với niềm đam mê nâng cao trải nghiệm nhân viên thông qua sức mạnh của AI.
+This project was built with a passion for enhancing employee experience through the power of AI.
 
 ---
 
