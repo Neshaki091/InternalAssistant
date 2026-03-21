@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InternalAssistant Dashboard — Manage Your AI Assistant</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/portal/css/style.css" />
+  <link rel="stylesheet" href="/portal/css/auth.css" />
+  <link rel="stylesheet" href="/portal/css/dashboard.css" />
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- ================= AUTH SCREEN ================= -->
+  <div id="auth-screen" class="hidden">
+    <div class="auth-card">
+      <div class="logo-box">
+        <div class="logo-icon">🤖</div>
+        <!-- Note: We keep InternalAssistant text in the header logo -->
+      </div>
+      <h2 id="auth-title">Chào mừng trở lại</h2>
+      
+      <div class="oauth-box">
+        <button onclick="window.loginOAuth('google')" class="btn outline">
+          <img src="https://www.google.com/favicon.ico" alt="Google"> Google
+        </button>
+        <button onclick="window.loginOAuth('github')" class="btn outline">
+          <img src="https://github.com/favicon.ico" alt="GitHub"> GitHub
+        </button>
+      </div>
+
+      <div class="sep">HOẶC DÙNG EMAIL</div>
+
+      <div id="auth-msg" class="status-msg"></div>
+      
+      <form id="auth-form">
+        <div id="register-fields" class="hidden">
+          <div class="form-group">
+            <label>Tên công ty</label>
+            <input type="text" id="reg-company-name" placeholder="Ví dụ: Công ty IA" />
+          </div>
+          <div class="form-group">
+            <label>Company ID (Slug - Viết liền không dấu)</label>
+            <input type="text" id="reg-company-slug" placeholder="Ví dụ: ia-corp" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email đăng nhập</label>
+          <input type="email" id="email" placeholder="email@company.com" required />
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn" style="width:100%;">Tiếp tục 🚀</button>
+      </form>
+      
+      <p style="margin-top:20px; font-size:14px; color:var(--mute);">
+        <span id="auth-toggle-text">Chưa có tài khoản?</span>
+        <a href="#" id="auth-toggle" class="toggle-link">Đăng ký ngay</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= DASHBOARD SCREEN ================= -->
+  <div id="dashboard-screen" class="hidden">
+    <header>
+      <div class="header-logo">
+        <div class="icon">🤖</div>
+        <span>InternalAssistant Dashboard</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span id="user-display" style="font-size:14px; color:var(--mute);"></span>
+        <button id="logout-btn" class="btn secondary" style="padding:8px 16px; font-size:13px;">Đăng xuất</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="grid">
+        <!-- Sidebar Navigation -->
+        <aside class="tabs">
+          <button class="tab-btn active" data-tab="general">🏢 Cấu hình Company</button>
+          <button class="tab-btn" data-tab="knowledge">📚 Tài liệu Policy</button>
+          <button class="tab-btn" data-tab="logs">📜 Lịch sử hoạt động</button>
+          <button class="tab-btn" data-tab="embed">🔌 Mã nhúng Widget</button>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="content">
+          
+          <!-- TAB 1: General Config -->
+          <div id="tab-general" class="content-card active">
+            <h2>Cấu hình công ty</h2>
+            <div id="setup-company-msg" class="status-msg info hidden">
+              Chào mừng! Vui lòng hoàn tất đăng ký thông tin công ty bên dưới để kích hoạt tài khoản.
+            </div>
+            <div id="config-msg" class="status-msg"></div>
+            
+            <form id="config-form">
+              <div class="form-group">
+                <label>Tên công ty</label>
+                <input type="text" id="company-name" required />
+              </div>
+              <div class="form-group">
+                <label>Company ID (Slug - Tên miền duy nhất)</label>
+                <input type="text" id="company-slug" placeholder="Ví dụ: my-company" />
+              </div>
+              <div class="form-group">
+                <label>Email Công ty / Quản lý (Nhận đơn xin nghỉ phép qua Gmail)</label>
+                <input type="email" id="company-email" placeholder="manager@company.com" />
+              </div>
+              <div class="form-group">
+                <label>Google Spreadsheet ID (Dành cho ghi log n8n)</label>
+                <input type="text" id="sheet-id" placeholder="Copy ID từ URL Google Sheet của bạn" />
+              </div>
+              <button type="submit" class="btn">Lưu cấu hình 💾</button>
+            </form>
+          </div>
+
+          <!-- TAB 2: Knowledge Base -->
+          <div id="tab-knowledge" class="content-card">
+            <h2>Quản lý Tài liệu (Knowledge Base)</h2>
+            <p style="color:var(--mute); font-size:14px; margin-bottom:20px;">
+              Tải lên các file Policy (Hỗ trợ .docx, .txt). AI sẽ tự học trong tích tắc.
+            </p>
+            <div id="ingest-msg" class="status-msg"></div>
+            
+            <form id="ingest-form">
+              <div class="form-group">
+                <label>Tệp tài liệu cần nạp:</label>
+                <input type="file" id="policy-file" accept=".docx,.txt" required />
+              </div>
+              <button type="submit" class="btn">Upload & Huấn luyện AI 🚀</button>
+            </form>
+            
+            <div id="doc-list"></div>
+          </div>
+
+          <!-- TAB 3: Activity Logs -->
+          <div id="tab-logs" class="content-card">
+            <h2>Lịch sử hoạt động</h2>
+            <p style="color:var(--mute); font-size:14px; margin-bottom:20px;">
+              Giám sát toàn bộ tương tác và yêu cầu từ nhân viên thông qua Chatbot.
+            </p>
+            
+            <div style="margin-bottom:30px;">
+              <h3>📄 Đơn nghỉ phép (Gửi qua n8n)</h3>
+              <div class="table-container">
+                <table id="leave-table">
+                  <thead><tr><th style="width:25%">Nhân viên</th><th style="width:25%">Loại</th><th style="width:25%">Ngày bắt đầu</th><th style="width:25%">Trạng thái</th></tr></thead>
+                  <tbody id="leave-body"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <h3>🛡️ Kiểm duyệt nội dung (AI Moderation)</h3>
+              <div class="table-container">
+                <table id="mod-table">
+                  <thead><tr><th style="width:50%">Nội dung vi phạm / Cảnh báo</th><th style="width:25%">Kết quả</th><th style="width:25%">Chi tiết Flags</th></tr></thead>
+                  <tbody id="mod-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: Embed SDK -->
+          <div id="tab-embed" class="content-card">
+            <h2>Mã nhúng SDK</h2>
+            <p style="color:var(--mute); font-size:14px; margin-bottom:10px;">
+              Copy đoạn mã script này và dán vào trước thẻ <code>&lt;/body&gt;</code> trong website của công ty bạn.
+            </p>
+            <div class="embed-box">
+              <code id="embed-code">Loading SDK...</code>
+              <button class="btn secondary copy-btn" id="copy-btn">Copy</button>
+            </div>
+          </div>
+
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loader">
+    <div style="text-align:center;">
+      <div class="loader-icon">🐟</div>
+      <p id="loader-text" style="color:#fff; font-weight:600; letter-spacing:1px;">Đang tải hệ thống...</p>
+    </div>
+  </div>
+
+  <!-- App Entry Point (Type module allows imports/exports) -->
+  <script type="module" src="/portal/js/app.js"></script>
+
+</body>
+</html>
