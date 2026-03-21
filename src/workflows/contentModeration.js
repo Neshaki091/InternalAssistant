@@ -61,6 +61,10 @@ async function contentModerationWorkflow(entities, clientId) {
         "👤 Đã chuyển đến bộ phận kiểm duyệt thủ công để xem xét.",
       ].join("\n"),
       data: log,
+      actions: [
+        { label: "✉️ Khiếu nại (Gửi Email)", value: "create_email" },
+        { label: "❌ Đóng", value: "cancel" }
+      ]
     };
   }
 

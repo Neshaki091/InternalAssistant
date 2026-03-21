@@ -6,6 +6,7 @@ const { initStorage } = require("./src/storage");
 const chatRouter = require("./src/routes/chat");
 const ingestRouter = require("./src/routes/ingest");
 const logsRouter = require("./src/routes/logs");
+const voiceRouter = require("./src/routes/voice");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -14,49 +15,45 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
-// Serve Static Folders
-app.use("/sdk", express.static(path.join(__dirname, "sdk")));
-app.use("/example", express.static(path.join(__dirname, "example")));
-app.use("/portal", express.static(path.join(__dirname, "portal")));
+// Serve Widget SDK (agent.js, etc.)
+const noCache = { 
+    etag: false, 
+    lastModified: false, 
+    setHeaders: (res) => res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate") 
+};
+app.use("/sdk", express.static(path.join(__dirname, "sdk"), noCache));
 
-app.get("/dashboard", (_req, res) => {
-    res.sendFile(path.join(__dirname, "portal", "index.html"));
-});
+// ─── Assistant API Routes ───
+app.use("/api/chat", chatRouter);
+app.use("/api/ingest", ingestRouter); // Backend for loading client policies
+app.use("/api/voice", voiceRouter);   // Voice to Voice engine
 
 app.get("/", (_req, res) => {
-    res.redirect("/dashboard");
+    res.json({ message: "InternalAssistant Backend is running.", sdk: "/sdk/agent.js" });
 });
-
-app.get("/portal", (_req, res) => {
-    res.redirect("/dashboard");
-});
-
-app.use("/api/chat", chatRouter);
-app.use("/api/ingest", ingestRouter);
-app.use("/api/logs", logsRouter);
 
 // ─── Global Error Handler ───
 app.use((err, req, res, next) => {
-    console.error("[Server Error]", err);
-    res.status(500).json({ error: "Lỗi hệ thống", details: err.message });
+    console.error("[Assistant Engine Error]", err);
+    res.status(500).json({ error: "Lỗi động cơ Trợ lý", details: err.message });
 });
 
-// ─── Start ───
+// ─── Start Assistant Engine ───
 (async function start() {
   try {
     await initStorage();
     app.listen(PORT, () => {
       console.log("");
-      console.log("🤖 InternalAssistant SaaS running 🤖");
-      console.log("   --- API ---");
-      console.log("   Health:   http://localhost:" + PORT + "/api/health");
-      console.log("   --- SDK & PORTAL ---");
-      console.log("   Dashboard: http://localhost:" + PORT + "/dashboard");
-      console.log("   Example:  http://localhost:" + PORT + "/example (Widget test)");
-      console.log("   SDK:      http://localhost:" + PORT + "/sdk/agent.js");
+      console.log("⚡ InternalAssistant Backend Engine ⚡");
+      console.log("-----------------------------------------");
+      console.log("   SDK Embed: http://localhost:" + PORT + "/sdk/agent.js");
+      console.log("   API Chat:  http://localhost:" + PORT + "/api/chat");
+      console.log("   API Ingest: http://localhost:" + PORT + "/api/ingest");
+      console.log("-----------------------------------------");
+      console.log("Assistant is ready to be embedded. Ready for Hackathon!");
       console.log("");
     });
   } catch (e) {
-    console.error("Failed to start server:", e);
+    console.error("Failed to start Assistant:", e);
   }
 })();

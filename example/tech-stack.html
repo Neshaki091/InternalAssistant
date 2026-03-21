@@ -3,56 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chi tiết Công nghệ — Internal AI Assistant</title>
+  <title>Chi tiết Công nghệ — InternalAssistant Engine</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/example/about-style.css" />
+  <link rel="stylesheet" href="./about-style.css" />
 </head>
 <body>
-  <nav class="nav">
-    <div class="logo">🤖 <span>Tech</span>Stack</div>
-    <div class="nav-links"><a href="/example/index.html">Back to Demo</a></div>
-  </nav>
+  <script src="./i18n.js"></script>
+  <div id="navbar-mount"></div>
 
   <main class="section">
     <h1 style="font-size: 32px; margin-bottom: 40px; text-align: center;">Kiến trúc Hệ thống & Công nghệ</h1>
 
     <div class="features-grid">
       <div class="f-card">
-        <div class="f-icon">🟢</div>
-        <h3>Backend: Node.js & Express</h3>
-        <p>Hệ thống xử lý mạnh mẽ, không đồng bộ, giúp quản lý hàng ngàn luồng chat đồng thời mà không bị treo.</p>
-      </div>
-      <div class="f-card">
         <div class="f-icon">⚡</div>
-        <h3>Supabase + pgvector</h3>
-        <p>Cơ sở dữ liệu vector tốc độ cao, cho phép tìm kiếm ngữ nghĩa (semantic search) trên hàng triệu bản ghi chỉ trong vài mili giây.</p>
+        <h3 data-i18n="tech_f_gemma_title">Gemma 3 1B IT (Primary)</h3>
+        <p data-i18n="tech_f_gemma">Mô hình AI chủ lực cho việc soạn thảo Email và tóm tắt quy định. Đảm bảo độ trễ thấp (<1s) và không ảo giác tên nhân viên.</p>
       </div>
       <div class="f-card">
-        <div class="f-icon">💎</div>
-        <h3>Gemini 1.5 Flash</h3>
-        <p>Mô hình ngôn ngữ lớn (LLM) từ Google, tối ưu giữa độ chính xác và tốc độ phản hồi cực nhanh cho ứng dụng doanh nghiệp.</p>
-      </div>
-      <div class="f-card">
-        <div class="f-icon">🔄</div>
-        <h3>n8n Automation</h3>
-        <p>Kết nối AI với đời thực. Tự động hóa việc ghi dữ liệu vào Google Sheets, gửi email qua Gmail hoặc thông báo qua Slack.</p>
-      </div>
-      <div class="f-card">
-        <div class="f-icon">🐠</div>
-        <h3>TinyFish Agent</h3>
-        <p>AI Agent chuyên biệt cho tự động hóa mục tiêu, giúp phân tích các yêu cầu phức tạp thành các bước thực thi nhỏ hơn.</p>
+        <div class="f-icon">🧠</div>
+        <h3 data-i18n="feat_intent_title">TinyFish Agentic Broker</h3>
+        <p data-i18n="tech_f_tiny">Bộ não điều phối ý định (Intent Parser). Xử lý logic nghiệp vụ phức tạp và chuyển đổi linh hoạt giữa các Workflow.</p>
       </div>
       <div class="f-card">
         <div class="f-icon">🛡️</div>
-        <h3>Moderation Engine</h3>
-        <p>Lớp bảo vệ AI tự xây dựng, đảm bảo môi trường làm việc luôn văn minh và an toàn dữ liệu nội bộ.</p>
+        <h3 data-i18n="feat_triple_title">Triple-Check Extraction</h3>
+        <p data-i18n="tech_f_triple">Hệ thống 3 lớp (AI + RegEx + Workflow Safety) đảm bảo bóc tách Tên, ID, Ngày và Lý do chính xác tuyệt đối.</p>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🎤</div>
+        <h3 data-i18n="feat_voice_title">Agora Web SDK</h3>
+        <p data-i18n="tech_f_agora">Động cơ Voice-to-Voice thời gian thực, mang lại trải nghiệm giao tiếp rảnh tay (hands-free) chuyên nghiệp.</p>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">📦</div>
+        <h3 data-i18n="feat_sdk_title">Standalone SDK Core</h3>
+        <p data-i18n="tech_f_sdk">Kiến trúc tách biệt hoàn toàn (SaaS-Ready). Widget có khả năng nhúng vào bất kỳ website nào chỉ với 1 dòng script.</p>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🔄</div>
+        <h3 data-i18n="tech_f_n8n_title">n8n Local-First Hub</h3>
+        <p data-i18n="tech_f_n8n">Tận dụng n8n cho việc đồng bộ dữ liệu, nhưng vẫn đảm bảo Trợ lý hoạt động mượt mà bằng logic xử lý tại chỗ (Local Fallbacks).</p>
       </div>
     </div>
 
-    <div style="margin-top: 80px; text-align: center;">
-      <h2 style="margin-bottom: 20px;">Sơ đồ luồng dữ liệu</h2>
-      <div style="background:var(--bg-card); border:1px solid var(--border); padding:40px; border-radius:24px; font-family:monospace; color:var(--accent);">
-        User Message ➔ Node.js ➔ Gemini (Intent) ➔ Supabase (RAG) ➔ n8n (Action) ➔ Response
+    <div style="margin-top: 80px;">
+      <h2 style="text-align: center; margin-bottom: 40px; font-size: 28px;" data-i18n="tech_flow_title">🎛️ Data Flow Architecture</h2>
+      <div class="flow-container" style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+        
+        <!-- Step 1 -->
+        <div class="flow-step" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 16px; text-align: center; min-width: 120px;">
+          <div style="font-size: 20px; margin-bottom: 5px;">💬</div>
+          <div style="font-weight: 700; color: #fff; font-size: 13px;">User</div>
+          <div style="font-size: 10px; color: var(--text-dim);">Message</div>
+        </div>
+
+        <div style="color: var(--accent); font-size: 16px;">➜</div>
+
+        <!-- Step 2 -->
+        <div class="flow-step" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1)); border: 1px solid var(--accent); padding: 15px; border-radius: 16px; text-align: center; min-width: 120px;">
+          <div style="font-size: 20px; margin-bottom: 5px;">🧠</div>
+          <div style="font-weight: 700; color: #fff; font-size: 13px;">TinyFish</div>
+          <div style="font-size: 10px; color: var(--accent); font-weight: 600;">Intent Parser</div>
+        </div>
+
+        <div style="color: var(--accent); font-size: 16px;">➜</div>
+
+        <!-- Step 3 -->
+        <div class="flow-step" style="background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(34, 197, 94, 0.1)); border: 1px solid #4ade80; padding: 15px; border-radius: 16px; text-align: center; min-width: 120px;">
+          <div style="font-size: 20px; margin-bottom: 5px;">💎</div>
+          <div style="font-weight: 700; color: #fff; font-size: 13px;">Gemma 3</div>
+          <div style="font-size: 10px; color: #4ade80; font-weight: 600;">Drafting AI</div>
+        </div>
+
+        <div style="color: var(--accent); font-size: 16px;">➜</div>
+
+        <!-- Step 4 (NEW n8n Node) -->
+        <div class="flow-step" style="background: linear-gradient(135deg, rgba(255, 107, 74, 0.1), rgba(255, 71, 71, 0.1)); border: 1px solid #ff4747; padding: 15px; border-radius: 16px; text-align: center; min-width: 120px;">
+          <div style="font-size: 20px; margin-bottom: 5px;">🔄</div>
+          <div style="font-weight: 700; color: #fff; font-size: 13px;">n8n Action</div>
+          <div style="font-size: 10px; color: #ff6b4a; font-weight: 600;">Data Sync</div>
+        </div>
+
+        <div style="color: var(--accent); font-size: 16px;">➜</div>
+
+        <!-- Step 5 -->
+        <div class="flow-step" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(217, 119, 6, 0.1)); border: 1px solid #fbbf24; padding: 15px; border-radius: 16px; text-align: center; min-width: 120px;">
+          <div style="font-size: 20px; margin-bottom: 5px;">🛡️</div>
+          <div style="font-weight: 700; color: #fff; font-size: 13px;">Triple-Check</div>
+          <div style="font-size: 10px; color: #fbbf24; font-weight: 600;">Safety Filter</div>
+        </div>
+
+        <div style="color: var(--accent); font-size: 16px;">➜</div>
+
+        <!-- Step 6 -->
+        <div class="flow-step" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 16px; text-align: center; min-width: 120px;">
+          <div style="font-size: 20px; margin-bottom: 5px;">📫</div>
+          <div style="font-weight: 700; color: #fff; font-size: 13px;">Response</div>
+          <div style="font-size: 10px; color: var(--text-dim);">Widget View</div>
+        </div>
       </div>
     </div>
   </main>

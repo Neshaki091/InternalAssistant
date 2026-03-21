@@ -1,10 +1,12 @@
 var { queryRAG } = require("../ragService");
 var session = require("../sessionManager");
-var storage = require("../storage");
 var n8n = require("../n8nService");
 var { CLIENTS } = require("../clients");
+var { T } = require("../language");
 
-async function leaveRequestWorkflow(entities, clientId, sessionId, message) {
+async function leaveRequestWorkflow(entities, clientId, sessionId, message, lang) {
+  var strings = T[lang || "vi"];
+  
   // Build RAG query from user's leave context
   var queryParts = ["quy định nghỉ phép"];
   if (entities.type === "sick") queryParts.push("nghỉ ốm");
@@ -12,107 +14,140 @@ async function leaveRequestWorkflow(entities, clientId, sessionId, message) {
   if (entities.reason) queryParts.push(entities.reason);
   var ragQuery = queryParts.join(" ");
 
-  // Call RAG: search policy + OpenAI summarize (filtered by clientId)
-  var policySummary;
-  try {
-    policySummary = await queryRAG(ragQuery, clientId);
-  } catch (err) {
-    console.error("[LeaveWorkflow] RAG error:", err.message);
-    policySummary = "Không thể truy xuất quy định lúc này. Vui lòng thử lại.";
+  // Call RAG: search policy + AI summarize
+  var policySummary = "";
+  var isDirect = (entities.is_direct_action === true || entities.is_direct_action === "true");
+
+  if (isDirect) {
+    console.log("[LeaveWorkflow] Direct action detected, skipping detailed RAG summary.");
+    policySummary = lang === "vi" ? "✅ **Xác nhận yêu cầu nghỉ phép của bạn:**" : "✅ **Confirming your leave request:**";
+  } else {
+    try {
+      policySummary = await queryRAG(ragQuery, clientId, lang);
+    } catch (err) {
+      console.error("[LeaveWorkflow] RAG error:", err.message);
+      policySummary = strings.leave_policy_title;
+    }
+  }
+
+  // Safety: Extract name from message if entity is default/missing
+  var employeeName = entities.employee;
+  if (!employeeName || employeeName === "Nhân viên" || employeeName === "Employee") {
+     var nameMatch = message.match(/(?:tên(?: là)?|nhân viên|my name is|i am)\s+([a-zà-ỹ\s]{3,40})/i);
+     if (nameMatch) employeeName = nameMatch[1].trim().split(/\s*(?:id|mã|số|xin|nghỉ|từ|đến|ngày|vì|for|request|from|at|$)/i)[0].trim();
+  }
+
+  // Safety: Extract reason if missing
+  var leaveReason = entities.reason;
+  if (!leaveReason) {
+     var rMatch = message.match(/(?:vì lý do|lý do là|do|lý do:|for|reason:)\s+([^,.\n?!|]+)/i);
+     if (rMatch) leaveReason = rMatch[1].trim();
   }
 
   // Save leave data to session for later confirmation
   var leaveData = {
     clientId: clientId,
-    employee: entities.employee || "Nhân viên",
+    employee: employeeName || (lang === "vi" ? "Nhân viên" : "Employee"),
+    employeeId: entities.employeeId || null,
     type: entities.type || "annual",
-    startDate: entities.startDate || entities.start_date || "Chưa xác định",
-    endDate: entities.endDate || entities.end_date || "Chưa xác định",
-    reason: entities.reason || "",
+    startDate: entities.startDate || entities.start_date || (lang === "vi" ? "Chưa xác định" : "Not specified"),
+    endDate: entities.endDate || entities.end_date || (lang === "vi" ? "Chưa xác định" : "Not specified"),
+    reason: leaveReason || "",
+    query: entities.query || message || ""
   };
 
-  if (sessionId) {
-    session.setWaitingConfirmation(sessionId, leaveData);
-  }
-
-  // Also save to storage
-  await storage.createLeaveRequest(Object.assign({}, leaveData, { status: "draft" }));
-
-  // --- Auto Policy Enforcement ---
   var config = CLIENTS[clientId] || {};
   var spreadsheetId = config.spreadsheetId || "";
   
-  // Real-time API check via n8n webhook
-  var balanceRes = await n8n.checkLeaveBalance(spreadsheetId, leaveData.employee);
+  // Real-time API check
+  var balanceRes = await n8n.checkLeaveBalance(spreadsheetId, leaveData.employee, leaveData.employeeId);
   var usedDays = balanceRes.usedDays || 0;
 
-  // Calculate days if dates are present
-  var totalDays = 0;
+  // Calculate days
   function parseDateString(dateStr) {
-    if (!dateStr || String(dateStr).includes("Chưa xác định")) return null;
+    if (!dateStr || String(dateStr).includes("Chưa xác định") || String(dateStr).includes("Not specified")) return null;
     var parts = dateStr.split("/");
-    if (parts.length === 3) {
-      return new Date(parts[2], parts[1] - 1, parts[0]);
-    }
+    if (parts.length === 3) return new Date(parts[2], parts[1] - 1, parts[0]);
     return null;
   }
 
   var startD = parseDateString(leaveData.startDate);
   var endD = parseDateString(leaveData.endDate);
-  
+  var totalDays = 0;
   if (startD && endD && endD >= startD) {
     var diffTime = endD.getTime() - startD.getTime();
-    totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclusive
+    totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
   }
 
-  var actionButtons = [];
-  var policyWarning = "";
   var totalRequested = usedDays + totalDays;
+  var isViolation = (totalRequested > 12 || totalDays > 5);
+  leaveData.days = totalDays;
+  leaveData.usedDays = usedDays;
+  leaveData.isViolation = isViolation;
 
-  if (totalRequested > 12) {
-    // Policy Violation: Exceeded annual quota
-    policyWarning = "\n🚨 **CẢNH BÁO QUỸ PHÉP NĂM:**\nAPI Hệ thống ghi nhận bạn đã sử dụng **" + usedDays + " ngày** phép. Nếu duyệt thêm **" + totalDays + " ngày** này, tổng số sẽ là **" + totalRequested + "/12 ngày** (Vượt hạn mức quy định). Hệ thống từ chối tạo đơn nghỉ phép có lương tự động.";
-    actionButtons = [
-      { label: "✉️ Xin nghỉ Không Lương (Gửi Email)", value: "create_email" },
-      { label: "❌ Hủy đơn", value: "cancel" },
-    ];
-  } else if (totalDays > 5) {
-    // Policy Violation: Block standard creation for > 5 days contiguous
-    policyWarning = "\n⚠️ **CẢNH BÁO QUY TRÌNH BAO GỒM:**\nBạn đang xin nghỉ **" + totalDays + " ngày** liên tục, vượt hạn mức liền kề. Phải có sự phê duyệt trực tiếp bằng Email từ Giám đốc. Hệ thống tự động khóa tính năng nộp đơn nhanh.";
-    actionButtons = [
-      { label: "✉️ Soạn Email gửi Giám đốc", value: "create_email" },
-      { label: "❌ Hủy đơn", value: "cancel" },
-    ];
-  } else {
-    // Normal flow
-    actionButtons = [
-      { label: "📄 Tạo đơn nghỉ (Quỹ còn lại: " + (12 - totalRequested) + ")", value: "create_leave" },
-      { label: "✉️ Tạo email", value: "create_email" },
-      { label: "❌ Không, cảm ơn", value: "cancel" },
-    ];
-  }
+  // Build the output parts
+  var lines = [
+    strings.leave_policy_title,
+    "",
+    policySummary,
+  ];
 
-  // Return policy summary + action buttons
-  return {
-    output: [
-      "📋 **Thông tin quy định nghỉ phép:**",
-      "",
-      policySummary,
+  if (isDirect) {
+    if (sessionId) session.setWaitingConfirmation(sessionId, leaveData, lang);
+    
+    var actionButtons = [];
+    var policyWarning = "";
+
+    if (totalRequested > 12) {
+      policyWarning = strings.leave_quota_warning
+        .replace("{used}", usedDays).replace("{requested}", totalDays).replace("{total}", totalRequested);
+      actionButtons = [
+        { label: strings.btn_create_email, value: strings.val_create_email },
+        { label: strings.btn_cancel, value: strings.val_cancel },
+      ];
+    } else if (totalDays > 5) {
+      policyWarning = strings.leave_contiguous_warning.replace("{days}", totalDays);
+      actionButtons = [
+        { label: strings.btn_email_gm, value: strings.val_create_email },
+        { label: strings.btn_cancel, value: strings.val_cancel },
+      ];
+    } else {
+      var rem = 12 - totalRequested;
+      actionButtons = [
+        { label: strings.btn_create_leave.replace("{rem}", rem), value: strings.val_create_leave },
+        { label: strings.btn_create_email, value: strings.val_create_email },
+        { label: strings.btn_cancel, value: strings.val_cancel },
+      ];
+    }
+
+    lines.push(
       "",
       "---",
       "",
-      "📝 **Thông tin đơn của bạn:**",
-      "• Mã Data: `Fetch Data từ ID: " + spreadsheetId.substring(0,8) + "...`",
-      "• Đã nghỉ: **" + usedDays + " ngày**",
-      "• Từ ngày: " + leaveData.startDate,
-      "• Đến ngày: " + leaveData.endDate,
-      totalDays > 0 ? "• Xin nghỉ thêm: **" + totalDays + " ngày**" : "",
-      leaveData.reason ? "• Lý do: " + leaveData.reason : "",
+      strings.leave_request_title,
+      strings.leave_data_id + (spreadsheetId.substring(0,8) || "Demo") + "...`",
+      strings.leave_used.replace("{days}", usedDays),
+      strings.leave_start + leaveData.startDate,
+      strings.leave_end + leaveData.endDate,
+      totalDays > 0 ? strings.leave_requested.replace("{days}", totalDays) : "",
+      leaveData.reason ? strings.leave_reason + leaveData.reason : "",
       policyWarning,
       "",
-      "**Bạn muốn hệ thống xử lý tiếp như thế nào?**",
-    ].filter(Boolean).join("\n"),
-    actions: actionButtons,
+      strings.leave_next
+    );
+
+    return {
+      output: lines.filter(val => val !== undefined && val !== null).join("\n"),
+      actions: actionButtons,
+      data: leaveData,
+    };
+  }
+
+  return {
+    output: lines.filter(val => val !== undefined && val !== null).join("\n"),
+    actions: isDirect ? actionButtons : [
+      { label: lang === "vi" ? "📄 Tôi muốn xin nghỉ" : "📄 I want to request leave", value: message + " (direct_request)" }
+    ],
     data: leaveData,
   };
 }
