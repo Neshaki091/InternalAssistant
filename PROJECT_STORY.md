@@ -19,7 +19,7 @@ We realized that while LLM-powered chatbots are great at answering questions, th
 
 ### 🛠️ How we built it
 We adopted a modular, API-first architecture:
-* **The Intelligence Layer:** We integrated the **OpenAI API** (`gpt-4o-mini` & `text-embedding-3-small`) to process natural language and generate embeddings.
+* **The Intelligence Layer:** We integrated the **Gemini API** (`gemma-3-1b-it` & `gemini-embedding-001`) to process natural language and generate embeddings.
 * **The Memory & Auth Layer:** We utilized **Supabase**. We leveraged **Supabase Auth** for secure Dashboard logins, and **PostgreSQL with `pgvector`** to store document embeddings. We wrote custom RPC functions (`match_documents`) to perform high-speed cosine similarity searches while strictly filtering by `client_id` (enabling our multi-tenant architecture).
 * **The Orchestration Layer:** **Express.js (Node.js)** serves as the central nervous system. It handles the API routes, manages stateful conversation sessions, parses sophisticated user intents, and routes them to the correct workflows.
 * **The Execution Layer:** We deployed **n8n** to handle the heavy lifting of API integrations. Our Node backend sends structured JSON payloads to n8n webhooks, which then orchestrate the flow of data into Google Sheets and Gmail.
@@ -50,7 +50,7 @@ We adopted a modular, API-first architecture:
 * `javascript`
 * `node.js`
 * `express.js`
-* `openai`
+* `gemini`
 * `supabase`
 * `postgresql`
 * `pgvector`
