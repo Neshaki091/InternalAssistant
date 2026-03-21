@@ -37,6 +37,39 @@ Dự án được xây dựng với kiến trúc hiện đại, tập trung vào
 
 ---
 
+## 📸 Visual Showcase (English)
+
+### 🤖 Intelligent Chatbot Interaction
+The embeddable AI assistant can understand complex user intents like leave requests, extract relevant data (dates, reasons), and provide instant policy-based answers.
+![AI Chatbot Interaction](./assets/screenshot_chat.png)
+
+### 🔐 Secure Admin Access & Onboarding
+A premium, glassmorphism-inspired login and registration system ensures secure access for company administrators.
+| Admin Login | Company Registration |
+| :---: | :---: |
+| ![Login](./assets/screenshot_login.png) | ![Register](./assets/screenshot_register.png) |
+
+### ⚙️ Centralized Management Dashboard
+Administrators can easily configure company profiles, manage notification emails, and link Google Sheets for workflow automation.
+![Company Configuration](./assets/screenshot_config.png)
+
+### 📚 Knowledge Base & AI Training
+A dedicated interface for uploading `.docx` and `.txt` policy documents. The AI processes these files instantly to provide hallucination-free answers.
+![Knowledge Base](./assets/screenshot_knowledge.png)
+
+### 📜 Comprehensive Activity Logs
+Track all employee interactions, leave requests via n8n, and AI content moderation flags in one centralized location.
+![Activity Logs](./assets/screenshot_logs.png)
+
+### 🔌 Seamless SDK Integration
+Get your unique `<script>` tag from the dashboard and embed it into any intranet or corporate portal with ease. 
+| Dashboard Embed View | Code-level Integration |
+| :---: | :---: |
+| ![Embed Sidebar](./assets/screenshot_embed.png) | ![Code Integration](./assets/screenshot_code.png) |
+
+---
+
+
 ## 📂 Cấu trúc thư mục
 
 ```text
