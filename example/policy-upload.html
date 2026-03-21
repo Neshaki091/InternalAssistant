@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Policy — InternalAssistant Example</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/example/upload-style.css" />
+</head>
+<body>
+
+  <div class="upload-card">
+    <div class="icon-box">📄</div>
+    <h1>Nạp Quy định Công ty</h1>
+    <p class="sub">Tải lên file chính sách của bạn (.docx, .txt) để AI tự động học và hỗ trợ nhân viên ngay lập tức.</p>
+
+    <form id="upload-form">
+      <div class="form-group">
+        <label for="clientId">Mã Công ty (Client ID)</label>
+        <input type="text" id="clientId" placeholder="Ví dụ: my-corp-01" required />
+      </div>
+
+      <div class="form-group">
+        <label>File tài liệu</label>
+        <div class="drop-area" id="drop-area">
+          <div class="drop-icon">📤</div>
+          <div class="drop-text">Kéo thả file vào đây hoặc <strong>chọn file</strong></div>
+          <input type="file" id="file-input" accept=".docx,.txt" />
+        </div>
+        <div id="file-name" class="selected-file"></div>
+      </div>
+
+      <button type="submit" class="btn" id="submit-btn" disabled>Bắt đầu Huấn luyện AI 🚀</button>
+    </form>
+
+    <div id="status"></div>
+
+    <a href="/example/index.html" class="nav-back">← Quay lại trang Demo Chat</a>
+  </div>
+
+  <script src="/example/upload-script.js"></script>
+</body>
+</html>

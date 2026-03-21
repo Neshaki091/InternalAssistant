@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chi tiết Công nghệ — Internal AI Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/example/about-style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="logo">🤖 <span>Tech</span>Stack</div>
+    <div class="nav-links"><a href="/example/index.html">Back to Demo</a></div>
+  </nav>
+
+  <main class="section">
+    <h1 style="font-size: 32px; margin-bottom: 40px; text-align: center;">Kiến trúc Hệ thống & Công nghệ</h1>
+
+    <div class="features-grid">
+      <div class="f-card">
+        <div class="f-icon">🟢</div>
+        <h3>Backend: Node.js & Express</h3>
+        <p>Hệ thống xử lý mạnh mẽ, không đồng bộ, giúp quản lý hàng ngàn luồng chat đồng thời mà không bị treo.</p>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">⚡</div>
+        <h3>Supabase + pgvector</h3>
+        <p>Cơ sở dữ liệu vector tốc độ cao, cho phép tìm kiếm ngữ nghĩa (semantic search) trên hàng triệu bản ghi chỉ trong vài mili giây.</p>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">💎</div>
+        <h3>Gemini 1.5 Flash</h3>
+        <p>Mô hình ngôn ngữ lớn (LLM) từ Google, tối ưu giữa độ chính xác và tốc độ phản hồi cực nhanh cho ứng dụng doanh nghiệp.</p>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🔄</div>
+        <h3>n8n Automation</h3>
+        <p>Kết nối AI với đời thực. Tự động hóa việc ghi dữ liệu vào Google Sheets, gửi email qua Gmail hoặc thông báo qua Slack.</p>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🐠</div>
+        <h3>TinyFish Agent</h3>
+        <p>AI Agent chuyên biệt cho tự động hóa mục tiêu, giúp phân tích các yêu cầu phức tạp thành các bước thực thi nhỏ hơn.</p>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🛡️</div>
+        <h3>Moderation Engine</h3>
+        <p>Lớp bảo vệ AI tự xây dựng, đảm bảo môi trường làm việc luôn văn minh và an toàn dữ liệu nội bộ.</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 80px; text-align: center;">
+      <h2 style="margin-bottom: 20px;">Sơ đồ luồng dữ liệu</h2>
+      <div style="background:var(--bg-card); border:1px solid var(--border); padding:40px; border-radius:24px; font-family:monospace; color:var(--accent);">
+        User Message ➔ Node.js ➔ Gemini (Intent) ➔ Supabase (RAG) ➔ n8n (Action) ➔ Response
+      </div>
+    </div>
+  </main>
+</body>
+</html>

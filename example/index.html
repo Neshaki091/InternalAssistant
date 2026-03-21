@@ -5,237 +5,100 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TinyFish InternalAssistant — Demo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #e2e8f0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, .05);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 20px;
-      padding: 48px 40px;
-      max-width: 640px;
-      width: 100%;
-    }
-
-    .logo {
-      width: 72px;
-      height: 72px;
-      margin: 0 auto 20px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #FF5733, #E64A2E);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
-      box-shadow: 0 8px 32px rgba(255, 87, 51, .3);
-    }
-
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 8px;
-      background: linear-gradient(135deg, #FF5733, #FF7F66);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .sub {
-      color: #94a3b8;
-      font-size: 15px;
-      line-height: 1.6;
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-
-    .feat {
-      background: rgba(255, 255, 255, .05);
-      border: 1px solid rgba(255, 255, 255, .08);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: left;
-    }
-
-    .fi {
-      font-size: 20px;
-      margin-bottom: 6px;
-    }
-
-    .ft {
-      font-size: 13px;
-      font-weight: 600;
-      color: #f1f5f9;
-      margin-bottom: 2px;
-    }
-
-    .fd {
-      font-size: 11px;
-      color: #64748b;
-      line-height: 1.4;
-    }
-
-    .code {
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 12px;
-      padding: 20px;
-      overflow-x: auto;
-      margin-bottom: 20px;
-    }
-
-    .code code {
-      font-family: 'Fira Code', 'Consolas', monospace;
-      font-size: 12px;
-      line-height: 1.9;
-      color: #e2e8f0;
-      white-space: pre;
-    }
-
-    .cm {
-      color: #64748b;
-    }
-
-    .tg {
-      color: #FF5733;
-    }
-
-    .at {
-      color: #38bdf8;
-    }
-
-    .vl {
-      color: #4ade80;
-    }
-
-    .api {
-      background: rgba(255, 255, 255, .03);
-      border: 1px solid rgba(255, 255, 255, .08);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .api h3 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #FF5733;
-      margin-bottom: 10px;
-    }
-
-    .api pre {
-      font-family: 'Fira Code', 'Consolas', monospace;
-      font-size: 11px;
-      line-height: 1.7;
-      color: #cbd5e1;
-      white-space: pre-wrap;
-    }
-
-    .hint {
-      text-align: center;
-      font-size: 13px;
-      color: #64748b;
-    }
-
-    .hint strong {
-      color: #FF5733;
-    }
-
-    @media(max-width:480px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .card {
-        padding: 30px 20px;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/example/landing-style.css" />
 </head>
 
 <body>
-  <div class="card">
-    <div class="logo">🐟</div>
-    <h1>InternalAssistant</h1>
-    <p class="sub">Embeddable AI-powered workflow platform.<br>Click the <strong style="color:#FF5733">chat
-        bubble</strong> ↘ to try it.</p>
+  <div class="container">
+    <header>
+      <div class="logo-glow">🐟</div>
+      <h1>InternalAssistant</h1>
+      <p class="tagline">Nền tảng tự động hóa quy trình nội bộ bằng AI. <br>Hỗ trợ đa doanh nghiệp, bảo mật và cực kỳ linh hoạt.</p>
+      
+      <div class="nav-links">
+        <a href="/example/about.html" class="btn-nav">📖 Về dự án</a>
+        <a href="/example/owner-dashboard-demo.html" class="btn-nav">👨‍💼 Owner View</a>
+        <a href="/example/tech-stack.html" class="btn-nav">💻 Tech Stack</a>
+      </div>
+    </header>
 
     <div class="grid">
-      <div class="feat">
-        <div class="fi">📋</div>
-        <div class="ft">Leave Requests</div>
-        <div class="fd">"Tôi muốn xin nghỉ phép 25/03 đến 27/03"<br>Auto-creates request → pending → approved</div>
+      <div class="feat-card">
+        <div class="feat-icon">📋</div>
+        <div class="feat-title">Leave Requests</div>
+        <p class="feat-desc">"Tôi muốn xin nghỉ phép từ 25/03 đến 27/03"<br>AI tự động bóc tách ngày và tạo đơn chờ duyệt.</p>
       </div>
-      <div class="feat">
-        <div class="fi">🛡️</div>
-        <div class="ft">Content Moderation</div>
-        <div class="fd">"Kiểm duyệt: spam scam content"<br>Auto-check → flag → human fallback</div>
+      <div class="feat-card">
+        <div class="feat-icon">🛡️</div>
+        <div class="feat-title">Content Control</div>
+        <p class="feat-desc">"Kiểm duyệt nội dung spam/scam."<br>Tự động nhận diện và gắn cờ các vi phạm chính sách.</p>
       </div>
-      <div class="feat">
-        <div class="fi">🤖</div>
-        <div class="ft">AI Intent Parsing</div>
-        <div class="fd">LLM-based extraction (OpenAI) with keyword fallback</div>
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <div class="feat-title">AI Intent Parsing</div>
+        <p class="feat-desc">Tận dụng sức mạnh của Gemini 1.5 Flash để hiểu ý định người dùng với độ chính xác cao.</p>
       </div>
-      <div class="feat">
-        <div class="fi">🏢</div>
-        <div class="ft">Multi-Tenant</div>
-        <div class="fd">Each client gets isolated data via clientId</div>
+      <div class="feat-card">
+        <div class="feat-icon">🏢</div>
+        <div class="feat-title">Multi-Tenant</div>
+        <p class="feat-desc">Mọi khách hàng đều được cách biệt dữ liệu hoàn toàn thông qua Client ID định danh.</p>
       </div>
     </div>
 
-    <div class="code"><code><span class="cm">&lt;!-- Embed in any website --&gt;</span>
-<span class="tg">&lt;script</span>
-  <span class="at">src</span>=<span class="vl">"http://localhost:4000/sdk/agent.js"</span>
-  <span class="at">data-client-id</span>=<span class="vl">"demo-001"</span>
-  <span class="at">data-api</span>=<span class="vl">"http://localhost:4000/api/chat"</span>
-<span class="tg">&gt;&lt;/script&gt;</span></code></div>
+    <!-- CTA Section -->
+    <div class="cta-block" onclick="window.location='/example/policy-upload.html'">
+      <div class="cta-icon">📚</div>
+      <div class="cta-content">
+        <h2>Nạp Quy định & Huấn luyện AI</h2>
+        <p>Bấm vào đây để tải tài liệu chính sách của bạn. AI sẽ học ngay lập tức để hỗ trợ nhân viên giải đáp thắc mắc.</p>
+      </div>
+      <div style="font-size: 32px; color: #fff; margin-left: auto;">→</div>
+    </div>
 
-    <div class="api">
-      <h3>API: POST /api/chat</h3>
-      <pre>
-// Request
-{ "clientId": "demo-001", "message": "Tôi muốn xin nghỉ phép" }
+    <div class="docs-section">
+      <div class="code-box">
+        <div class="code-header">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <pre>
+<span class="comment">&lt;!-- Nhúng vào bất kỳ website nào --&gt;</span>
+<span class="keyword">&lt;script</span>
+  <span class="attr">src</span>=<span class="string">"http://localhost:4000/sdk/agent.js"</span>
+  <span class="attr">data-client-id</span>=<span class="string">"demo-001"</span>
+  <span class="attr">data-api</span>=<span class="string">"http://localhost:4000/api/chat"</span>
+<span class="keyword">&gt;&lt;/script&gt;</span></pre>
+      </div>
 
-// Response
+      <div class="code-box">
+        <div class="code-header">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <pre>
+<span class="comment">// API: POST /api/chat</span>
+{ 
+  <span class="attr">"clientId"</span>: <span class="string">"demo-001"</span>, 
+  <span class="attr">"message"</span>: <span class="string">"Tôi muốn xin nghỉ"</span> 
+}
+
+<span class="comment">// Trả về:</span>
 {
-  "output": "✅ Đơn xin nghỉ phép năm đã được tạo!...",
-  "intent": "leave_request",
-  "confidence": 0.5,
-  "data": { "_id": "lr-1234", "status": "pending", ... }
+  <span class="attr">"output"</span>: <span class="string">"✅ Đã tạo đơn nghỉ phép!"</span>,
+  <span class="attr">"intent"</span>: <span class="string">"leave_request"</span>
 }</pre>
+      </div>
     </div>
 
-    <p class="hint">💡 Try: <strong>"xin nghỉ phép"</strong> · <strong>"kiểm duyệt nội dung spam"</strong> · or just say
-      hi!</p>
+    <p style="text-align: center; margin-top: 40px; color: var(--text-dim); font-size: 14px;">
+      💡 Thử gõ: <strong>"xin nghỉ phép"</strong> · <strong>"kiểm duyệt nội dung spam"</strong> ở khung chat ↘
+    </p>
   </div>
 
-  <!-- 🔽 One line to embed 🔽 -->
+  <!-- 🔽 SDK Embed 🔽 -->
   <script src="http://localhost:4000/sdk/agent.js" data-client-id="iac-project"
     data-api="http://localhost:4000/api/chat"></script>
 </body>
