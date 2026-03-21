@@ -28,9 +28,9 @@ app.use("/api/chat", chatRouter);
 app.use("/api/ingest", ingestRouter); // Backend for loading client policies
 app.use("/api/voice", voiceRouter);   // Voice to Voice engine
 
-app.get("/", (_req, res) => {
-    res.json({ message: "InternalAssistant Backend is running.", sdk: "/sdk/agent.js" });
-});
+// Serve Portal UI
+app.use(express.static(path.join(__dirname, "portal"))); 
+app.use("/portal", express.static(path.join(__dirname, "portal")));
 
 // ─── Global Error Handler ───
 app.use((err, req, res, next) => {
@@ -46,6 +46,8 @@ app.use((err, req, res, next) => {
       console.log("");
       console.log("⚡ InternalAssistant Backend Engine ⚡");
       console.log("-----------------------------------------");
+      console.log("   Portal UI: http://localhost:" + PORT + "/");
+      console.log("   Portal UI: http://localhost:" + PORT + "/portal");
       console.log("   SDK Embed: http://localhost:" + PORT + "/sdk/agent.js");
       console.log("   API Chat:  http://localhost:" + PORT + "/api/chat");
       console.log("   API Ingest: http://localhost:" + PORT + "/api/ingest");

@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="/portal/css/style.css" />
   <link rel="stylesheet" href="/portal/css/auth.css" />
   <link rel="stylesheet" href="/portal/css/dashboard.css" />
+  <style>
+    .lang-switcher { display: flex; gap: 5px; background: rgba(255,255,255,0.05); padding: 3px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+    .lang-btn { padding: 4px 10px; border-radius: 15px; border: none; background: transparent; color: #fff; cursor: pointer; font-size: 10px; font-weight: 700; transition: 0.3s; }
+    .lang-btn.active { background: var(--ta-brand, #FF5733) !important; box-shadow: 0 0 10px rgba(255,87,51,0.3); }
+  </style>
 
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -22,7 +27,7 @@
         <div class="logo-icon">🤖</div>
         <!-- Note: We keep InternalAssistant text in the header logo -->
       </div>
-      <h2 id="auth-title">Chào mừng trở lại</h2>
+      <h2 id="auth-title" data-i18n="auth_welcome">Chào mừng trở lại</h2>
       
       <div class="oauth-box">
         <button onclick="window.loginOAuth('google')" class="btn outline">
@@ -33,35 +38,35 @@
         </button>
       </div>
 
-      <div class="sep">HOẶC DÙNG EMAIL</div>
+      <div class="sep" data-i18n="auth_oauth_sep">HOẶC DÙNG EMAIL</div>
 
       <div id="auth-msg" class="status-msg"></div>
       
       <form id="auth-form">
         <div id="register-fields" class="hidden">
           <div class="form-group">
-            <label>Tên công ty</label>
-            <input type="text" id="reg-company-name" placeholder="Ví dụ: Công ty IA" />
+            <label data-i18n="auth_label_company">Tên công ty</label>
+            <input type="text" id="reg-company-name" data-i18n="auth_label_company" placeholder="Ví dụ: Công ty IA" />
           </div>
           <div class="form-group">
-            <label>Company ID (Slug - Viết liền không dấu)</label>
-            <input type="text" id="reg-company-slug" placeholder="Ví dụ: ia-corp" />
+            <label data-i18n="auth_label_slug">Company ID (Slug - Viết liền không dấu)</label>
+            <input type="text" id="reg-company-slug" data-i18n="auth_label_slug" placeholder="Ví dụ: ia-corp" />
           </div>
         </div>
         <div class="form-group">
-          <label>Email đăng nhập</label>
+          <label data-i18n="auth_label_email">Email đăng nhập</label>
           <input type="email" id="email" placeholder="email@company.com" required />
         </div>
         <div class="form-group">
-          <label>Mật khẩu</label>
+          <label data-i18n="auth_label_password">Mật khẩu</label>
           <input type="password" id="password" placeholder="••••••••" required />
         </div>
-        <button type="submit" class="btn" style="width:100%;">Tiếp tục 🚀</button>
+        <button type="submit" class="btn" style="width:100%;" data-i18n="auth_btn_continue">Tiếp tục 🚀</button>
       </form>
       
       <p style="margin-top:20px; font-size:14px; color:var(--mute);">
-        <span id="auth-toggle-text">Chưa có tài khoản?</span>
-        <a href="#" id="auth-toggle" class="toggle-link">Đăng ký ngay</a>
+        <span id="auth-toggle-text" data-i18n="auth_toggle_no_account">Chưa có tài khoản?</span>
+        <a href="#" id="auth-toggle" class="toggle-link" data-i18n="auth_toggle_register">Đăng ký ngay</a>
       </p>
     </div>
   </div>
@@ -71,11 +76,16 @@
     <header>
       <div class="header-logo">
         <div class="icon">🤖</div>
-        <span>InternalAssistant Dashboard</span>
+        <span data-i18n="dash_header_title">InternalAssistant Dashboard</span>
       </div>
       <div style="display:flex; align-items:center; gap:20px;">
+        <!-- Language Switcher -->
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="vi">VN</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
         <span id="user-display" style="font-size:14px; color:var(--mute);"></span>
-        <button id="logout-btn" class="btn secondary" style="padding:8px 16px; font-size:13px;">Đăng xuất</button>
+        <button id="logout-btn" class="btn secondary" style="padding:8px 16px; font-size:13px;" data-i18n="dash_logout">Đăng xuất</button>
       </div>
     </header>
 
@@ -83,10 +93,10 @@
       <div class="grid">
         <!-- Sidebar Navigation -->
         <aside class="tabs">
-          <button class="tab-btn active" data-tab="general">🏢 Cấu hình Company</button>
-          <button class="tab-btn" data-tab="knowledge">📚 Tài liệu Policy</button>
-          <button class="tab-btn" data-tab="logs">📜 Lịch sử hoạt động</button>
-          <button class="tab-btn" data-tab="embed">🔌 Mã nhúng Widget</button>
+          <button class="tab-btn active" data-tab="general" data-i18n="tab_general">🏢 Cấu hình Company</button>
+          <button class="tab-btn" data-tab="knowledge" data-i18n="tab_knowledge">📚 Tài liệu Policy</button>
+          <button class="tab-btn" data-tab="logs" data-i18n="tab_logs">📜 Lịch sử hoạt động</button>
+          <button class="tab-btn" data-tab="embed" data-i18n="tab_embed">🔌 Mã nhúng Widget</button>
         </aside>
 
         <!-- Content Area -->
@@ -94,62 +104,62 @@
           
           <!-- TAB 1: General Config -->
           <div id="tab-general" class="content-card active">
-            <h2>Cấu hình công ty</h2>
-            <div id="setup-company-msg" class="status-msg info hidden">
+            <h2 data-i18n="cfg_title">Cấu hình công ty</h2>
+            <div id="setup-company-msg" class="status-msg info hidden" data-i18n="cfg_welcome">
               Chào mừng! Vui lòng hoàn tất đăng ký thông tin công ty bên dưới để kích hoạt tài khoản.
             </div>
             <div id="config-msg" class="status-msg"></div>
             
             <form id="config-form">
               <div class="form-group">
-                <label>Tên công ty</label>
+                <label data-i18n="cfg_label_name">Tên công ty</label>
                 <input type="text" id="company-name" required />
               </div>
               <div class="form-group">
-                <label>Company ID (Slug - Tên miền duy nhất)</label>
-                <input type="text" id="company-slug" placeholder="Ví dụ: my-company" />
+                <label data-i18n="cfg_label_slug">Company ID (Slug - Tên miền duy nhất)</label>
+                <input type="text" id="company-slug" data-i18n="cfg_label_slug" placeholder="Ví dụ: my-company" />
               </div>
               <div class="form-group">
-                <label>Email Công ty / Quản lý (Nhận đơn xin nghỉ phép qua Gmail)</label>
-                <input type="email" id="company-email" placeholder="manager@company.com" />
+                <label data-i18n="cfg_label_email">Email Công ty / Quản lý (Nhận đơn xin nghỉ phép qua Gmail)</label>
+                <input type="email" id="company-email" data-i18n="cfg_label_email" placeholder="manager@company.com" />
               </div>
               <div class="form-group">
-                <label>Google Spreadsheet ID (Dành cho ghi log n8n)</label>
-                <input type="text" id="sheet-id" placeholder="Copy ID từ URL Google Sheet của bạn" />
+                <label data-i18n="cfg_label_sheet">Google Spreadsheet ID (Dành cho ghi log n8n)</label>
+                <input type="text" id="sheet-id" data-i18n="cfg_label_sheet" placeholder="Copy ID từ URL Google Sheet của bạn" />
               </div>
-              <button type="submit" class="btn">Lưu cấu hình 💾</button>
+              <button type="submit" class="btn" data-i18n="cfg_btn_save">Lưu cấu hình 💾</button>
             </form>
 
             <div class="form-group" style="margin-top: 30px; padding: 20px; background: rgba(var(--ta-brand-rgb, 255, 87, 51), 0.05); border-radius: 12px; border: 1px dashed var(--ta-brand, #FF5733);">
-              <h3 style="color: var(--ta-brand, #FF5733); font-weight: 700; display: flex; align-items: center; gap: 8px;">
+              <h3 style="color: var(--ta-brand, #FF5733); font-weight: 700; display: flex; align-items: center; gap: 8px;" data-i18n="cfg_template_title">
                 📂 File Google Sheet mẫu
               </h3>
-              <p style="font-size: 13px; color: var(--mute); margin-bottom: 15px;">
+              <p style="font-size: 13px; color: var(--mute); margin-bottom: 15px;" data-i18n="cfg_template_desc">
                 Để n8n và AI có thể đọc đúng dữ liệu (ID nhân viên, Số ngày nghỉ), bạn cần đặt tên cột ở Hàng 1 chính xác.
               </p>
               <div style="display: flex; gap: 10px; align-items: center;">
-                <a href="/portal/template.csv" download="InternalAssistant_Template.csv" class="btn outline" style="font-size: 13px; padding: 8px 16px;">
+                <a href="/portal/template.csv" download="InternalAssistant_Template.csv" class="btn outline" style="font-size: 13px; padding: 8px 16px;" data-i18n="cfg_template_download">
                   📥 Tải File mẫu (.CSV)
                 </a>
-                <span style="font-size: 12px; color: var(--mute);">Cột yêu cầu: <code>EmployeeId, Employee, Days, ...</code></span>
+                <span style="font-size: 12px; color: var(--mute);" data-i18n="cfg_template_columns">Cột yêu cầu: <code>EmployeeId, Employee, Days, ...</code></span>
               </div>
             </div>
           </div>
 
           <!-- TAB 2: Knowledge Base -->
           <div id="tab-knowledge" class="content-card">
-            <h2>Quản lý Tài liệu (Knowledge Base)</h2>
-            <p style="color:var(--mute); font-size:14px; margin-bottom:20px;">
+            <h2 data-i18n="kb_title">Quản lý Tài liệu (Knowledge Base)</h2>
+            <p style="color:var(--mute); font-size:14px; margin-bottom:20px;" data-i18n="kb_desc">
               Tải lên các file Policy (Hỗ trợ .docx, .txt). AI sẽ tự học trong tích tắc.
             </p>
             <div id="ingest-msg" class="status-msg"></div>
             
             <form id="ingest-form">
               <div class="form-group">
-                <label>Tệp tài liệu cần nạp:</label>
+                <label data-i18n="kb_label_file">Tệp tài liệu cần nạp:</label>
                 <input type="file" id="policy-file" accept=".docx,.txt" required />
               </div>
-              <button type="submit" class="btn">Upload & Huấn luyện AI 🚀</button>
+              <button type="submit" class="btn" data-i18n="kb_btn_upload">Upload & Huấn luyện AI 🚀</button>
             </form>
             
             <div id="doc-list"></div>
@@ -157,26 +167,26 @@
 
           <!-- TAB 3: Activity Logs -->
           <div id="tab-logs" class="content-card">
-            <h2>Lịch sử hoạt động</h2>
-            <p style="color:var(--mute); font-size:14px; margin-bottom:20px;">
+            <h2 data-i18n="logs_title">Lịch sử hoạt động</h2>
+            <p style="color:var(--mute); font-size:14px; margin-bottom:20px;" data-i18n="logs_desc">
               Giám sát toàn bộ tương tác và yêu cầu từ nhân viên thông qua Chatbot.
             </p>
             
             <div style="margin-bottom:30px;">
-              <h3>📄 Đơn nghỉ phép (Gửi qua n8n)</h3>
+              <h3 data-i18n="logs_leave_title">📄 Đơn nghỉ phép (Gửi qua n8n)</h3>
               <div class="table-container">
                 <table id="leave-table">
-                  <thead><tr><th style="width:25%">Nhân viên</th><th style="width:25%">Loại</th><th style="width:25%">Ngày bắt đầu</th><th style="width:25%">Trạng thái</th></tr></thead>
+                  <thead><tr><th style="width:25%" data-i18n="logs_th_employee">Nhân viên</th><th style="width:25%" data-i18n="logs_th_type">Loại</th><th style="width:25%" data-i18n="logs_th_start">Ngày bắt đầu</th><th style="width:25%" data-i18n="logs_th_status">Trạng thái</th></tr></thead>
                   <tbody id="leave-body"></tbody>
                 </table>
               </div>
             </div>
 
             <div>
-              <h3>🛡️ Kiểm duyệt nội dung (AI Moderation)</h3>
+              <h3 data-i18n="logs_mod_title">🛡️ Kiểm duyệt nội dung (AI Moderation)</h3>
               <div class="table-container">
                 <table id="mod-table">
-                  <thead><tr><th style="width:50%">Nội dung vi phạm / Cảnh báo</th><th style="width:25%">Kết quả</th><th style="width:25%">Chi tiết Flags</th></tr></thead>
+                  <thead><tr><th style="width:50%" data-i18n="logs_th_content">Nội dung vi phạm / Cảnh báo</th><th style="width:25%" data-i18n="logs_th_result">Kết quả</th><th style="width:25%" data-i18n="logs_th_details">Chi tiết Flags</th></tr></thead>
                   <tbody id="mod-body"></tbody>
                 </table>
               </div>
@@ -185,13 +195,13 @@
 
           <!-- TAB 4: Embed SDK -->
           <div id="tab-embed" class="content-card">
-            <h2>Mã nhúng SDK</h2>
-            <p style="color:var(--mute); font-size:14px; margin-bottom:10px;">
+            <h2 data-i18n="embed_title">Mã nhúng SDK</h2>
+            <p style="color:var(--mute); font-size:14px; margin-bottom:10px;" data-i18n="embed_desc">
               Copy đoạn mã script này và dán vào trước thẻ <code>&lt;/body&gt;</code> trong website của công ty bạn.
             </p>
             <div class="embed-box">
               <code id="embed-code">Loading SDK...</code>
-              <button class="btn secondary copy-btn" id="copy-btn">Copy</button>
+              <button class="btn secondary copy-btn" id="copy-btn" data-i18n="embed_copy_btn">Copy</button>
             </div>
           </div>
 
@@ -204,11 +214,21 @@
   <div class="loading-overlay" id="loader">
     <div style="text-align:center;">
       <div class="loader-icon">🐟</div>
-      <p id="loader-text" style="color:#fff; font-weight:600; letter-spacing:1px;">Đang tải hệ thống...</p>
+      <p id="loader-text" style="color:#fff; font-weight:600; letter-spacing:1px;" data-i18n="loader_loading">Đang tải hệ thống...</p>
     </div>
   </div>
 
   <!-- App Entry Point (Type module allows imports/exports) -->
+  <script type="module">
+    import { applyLanguage, getCurrentLang } from '/portal/js/i18n.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      const saved = getCurrentLang();
+      applyLanguage(saved);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+      });
+    });
+  </script>
   <script type="module" src="/portal/js/app.js"></script>
 
 </body>

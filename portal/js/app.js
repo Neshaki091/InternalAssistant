@@ -4,12 +4,14 @@ import {
   fetchLogs, fetchDocuments, ingestDocument 
 } from './api.js';
 import { setupAuth, checkSession } from './auth.js';
+import { t } from './i18n.js';
 
 // --- Globals & State ---
 let activeTab = 'general';
 
 // --- UI Helpers ---
-export function toggleLoader(show, text = "Đang xử lý...") {
+export function toggleLoader(show, text) {
+  if (!text) text = t("loader_processing");
   const loader = document.getElementById('loader');
   const ltext = document.getElementById('loader-text');
   if (loader) loader.style.display = show ? 'flex' : 'none';
@@ -85,8 +87,8 @@ function setupDashboardEvents() {
   if (copyBtn) {
     copyBtn.onclick = () => {
       navigator.clipboard.writeText(document.getElementById('embed-code').innerText);
-      copyBtn.innerText = "Đã copy!";
-      setTimeout(() => copyBtn.innerText = "Copy", 2000);
+      copyBtn.innerText = t("embed_copied");
+      setTimeout(() => copyBtn.innerText = t("embed_copy_btn"), 2000);
     };
   }
 
@@ -95,7 +97,7 @@ function setupDashboardEvents() {
   if (configForm) {
     configForm.onsubmit = async (e) => {
       e.preventDefault();
-      toggleLoader(true, "Lưu cấu hình...");
+      toggleLoader(true, t("loader_saving"));
       
       const name = document.getElementById('company-name').value;
       const slug = document.getElementById('company-slug').value.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -123,7 +125,7 @@ function setupDashboardEvents() {
           const { error } = await updateClientProfile(currentClientInfo.id, name, sid, email);
           if (error) throw error;
           
-          msg.innerText = "✅ Đã cập nhật thành công!";
+          msg.innerText = t("msg_update_success");
           msg.className = "status-msg success";
         }
       } catch (err) {
@@ -142,15 +144,15 @@ function setupDashboardEvents() {
   if (ingestForm) {
     ingestForm.onsubmit = async (e) => {
       e.preventDefault();
-      if (!currentClientInfo) return alert("Vui lòng lưu cấu hình công ty trước!");
+      if (!currentClientInfo) return alert(t("msg_cfg_required"));
       
-      toggleLoader(true, "AI đang nạp tài liệu...");
+      toggleLoader(true, t("loader_ingesting"));
       const file = document.getElementById('policy-file').files[0];
       const res = await ingestDocument(currentClientInfo.slug, currentClientInfo.spreadsheet_id, file);
       
       const msg = document.getElementById('ingest-msg');
       if (res.success) {
-        msg.innerText = "✅ Đã nạp kiến thức thành công!";
+        msg.innerText = t("msg_ingest_success");
         msg.className = "status-msg success";
         loadDocsData(currentClientInfo.slug);
       } else {
@@ -172,12 +174,12 @@ async function loadLogsData(slug) {
   
   if (data.success && data.data) {
     const rL = data.data.leaveRequests;
-    lBody.innerHTML = rL.length ? rL.map(r => `<tr><td>${r.employee || 'N/A'}</td><td>${r.type}</td><td>${r.startDate || '-'}</td><td><span class="tag ${r.status==='approved'?'safe':r.status==='rejected'?'flagged':'pending'}">${r.status.toUpperCase()}</span></td></tr>`).join('') : '<tr><td colspan="4" class="row-empty">Chưa có đơn nghỉ phép</td></tr>';
+    lBody.innerHTML = rL.length ? rL.map(r => `<tr><td>${r.employee || 'N/A'}</td><td>${r.type}</td><td>${r.startDate || '-'}</td><td><span class="tag ${r.status==='approved'?'safe':r.status==='rejected'?'flagged':'pending'}">${r.status.toUpperCase()}</span></td></tr>`).join('') : `<tr><td colspan="4" class="row-empty">${t("logs_empty_leave")}</td></tr>`;
     
     const rM = data.data.moderationLogs;
-    mBody.innerHTML = rM.length ? rM.map(r => `<tr><td>${r.content.substring(0,30)}...</td><td><span class="tag ${r.result==='safe'?'safe':'flagged'}">${r.result.toUpperCase()}</span></td><td>${r.flags?.join(', ') || '-'}</td></tr>`).join('') : '<tr><td colspan="3" class="row-empty">Chưa có vi phạm</td></tr>';
+    mBody.innerHTML = rM.length ? rM.map(r => `<tr><td>${r.content.substring(0,30)}...</td><td><span class="tag ${r.result==='safe'?'safe':'flagged'}">${r.result.toUpperCase()}</span></td><td>${r.flags?.join(', ') || '-'}</td></tr>`).join('') : `<tr><td colspan="3" class="row-empty">${t("logs_empty_mod")}</td></tr>`;
   } else {
-    lBody.innerHTML = mBody.innerHTML = '<tr><td colspan="4" class="row-empty">Lỗi tải dữ liệu</td></tr>';
+    lBody.innerHTML = mBody.innerHTML = `<tr><td colspan="4" class="row-empty">${t("logs_error")}</td></tr>`;
   }
 }
 
@@ -185,12 +187,12 @@ async function loadDocsData(slug) {
   const { data, error } = await fetchDocuments(slug);
   const list = document.getElementById('doc-list');
   if (error || !data.length) {
-    list.innerHTML = "<p class='row-empty' style='margin-top:20px'>Chưa có tài liệu nào.</p>";
+    list.innerHTML = `<p class='row-empty' style='margin-top:20px'>${t("msg_no_docs")}</p>`;
     return;
   }
   
   const sources = [...new Set(data.map(d => d.metadata.source))];
-  list.innerHTML = `<h3 style="margin-top:20px;">Tài liệu đang kích hoạt:</h3><ul>` + 
+  list.innerHTML = `<h3 style="margin-top:20px;">${t("kb_active_docs")}</h3><ul>` + 
     sources.map(s => `<li style="margin-bottom:8px;">📄 <strong>${s}</strong> <span class="tag safe" style="margin-left:8px;">Active</span></li>`).join('') + 
   `</ul>`;
 }
@@ -204,4 +206,12 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAuth();
   setupDashboardEvents();
   checkSession();
+
+  // Re-render dynamic parts on language change
+  window.addEventListener('lang-change', () => {
+    if (currentClientInfo) {
+      if (activeTab === 'logs') loadLogsData(currentClientInfo.slug);
+      if (activeTab === 'knowledge') loadDocsData(currentClientInfo.slug);
+    }
+  });
 });
