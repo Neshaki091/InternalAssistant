@@ -135,7 +135,61 @@ npm start
 
 ## 🌟 Development Team
 
-This project was built with a passion for enhancing employee experience through the power of AI.
+This project was built during a Hackathon by a dedicated team of two:
+
+1. **Huỳnh Công Luyện (AI Backend - The Brain)**
+   - **GitHub:** [neshaki091](https://github.com/neshaki091)
+   - **Focus:** Logic processing, data automation, and RAG architecture.
+   - **Key Tasks:** 
+     - Building Vector DB (ChromaDB) and document chunking using LangChain.
+     - Designing complex n8n workflows (Webhooks, AI Agents, Tools).
+     - Integrating Google Calendar and Gmail APIs.
+     - Developing real-time browsing capabilities for the AI Agent.
+
+2. **Trần Võ Quang Huy (AI Frontend - The Face & Voice)**
+   - **GitHub:** [tvqhuy246](https://github.com/tvqhuy246)
+   - **Focus:** User experience, voice interaction, and frontend architecture.
+   - **Key Tasks:**
+     - Building the UI with Streamlit/Next.js and Markdown support.
+     - Integrating Agora Web SDK for voice-to-voice interaction.
+     - Implementing Whisper (STT) and OpenAI/ElevenLabs (TTS) pipelines.
+     - Ensuring accurate citation display for RAG responses.
+
+---
+
+## 🛠️ Hackathon Execution Roadmap (24h)
+
+### 1. 🧠 AI Backend Strategy
+- **RAG Implementation:** Use ChromaDB to "chunk" company policies by clause for precise citations (page/article numbers).
+- **n8n Workflow:** 
+  - Webhook for frontend communication.
+  - AI Agent node with **TinyFish** system prompt.
+  - Tools connection (Google Calendar, Gmail, Vector Store).
+- **Portal Access:** Enable the agent to browse internal portals for real-time schedule checks.
+
+### 2. 🗣️ AI Frontend Strategy
+- **Framework:** Streamlit or Next.js for professional UI.
+- **Interactive Chat:** Support tables, Markdown, and quick action buttons (Yes/No).
+- **Voice Integration (Agora):**
+  - **Flow:** User Speech -> Whisper (STT) -> n8n Backend -> OpenAI Voice (TTS) -> Agora playback.
+- **Citations:** Professional source markers (e.g., "Source: Leave Policy, Page 5").
+
+### 3. 🎭 Winning Demo Scenario
+- **Opening:** User presses the mic and says: *"I want to take a day off this Friday for family matters."*
+- **Bot Response:** *"According to the Leave Policy (Page 12), you need 24h notice. You are eligible. Shall I prepare the request and send it to your manager?"*
+- **Action:** User clicks "Confirm".
+- **Outcome:** 
+  - n8n triggers an email to the judges.
+  - A Google Calendar event is automatically created.
+  - Bot confirms: *"All done! Best of luck with your family situation."*
+
+### 4. 🏁 Critical Checklist
+| Phase | AI Backend (Luyện) | AI Frontend (Huy) |
+| :--- | :--- | :--- |
+| **0h - 6h** | Connect n8n with Vector DB (RAG) | Core Chat UI + Agora setup |
+| **7h - 15h** | Gmail/Calendar Tools + TinyFish Agent | Voice-to-Text connection |
+| **16h - 22h** | Prompt Tuning & Citations | Final demo video & slides |
+| **23h - 24h** | System Testing | Pitch preparation |
 
 ---
 

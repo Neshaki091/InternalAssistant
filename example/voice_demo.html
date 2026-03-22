@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice Assistant Demo — InternalAssistant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;600;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="./about-style.css" />
+  <style>
+    :root {
+      --voice-accent: #6366f1;
+      --voice-pulse: rgba(99, 102, 241, 0.4);
+    }
+
+    body {
+      background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    .voice-container {
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .status-indicator {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--voice-accent);
+      margin-bottom: 30px;
+      font-weight: 700;
+    }
+
+    .mic-button {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--voice-accent);
+      border: none;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      box-shadow: 0 0 30px var(--voice-pulse);
+    }
+
+    .mic-button:hover {
+      transform: scale(1.1);
+    }
+
+    .mic-button.active {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 var(--voice-pulse); }
+      70% { box-shadow: 0 0 0 40px rgba(99, 102, 241, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+
+    .transcription-box {
+      margin-top: 20px;
+      min-height: 80px;
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      font-size: 18px;
+      line-height: 1.6;
+      font-style: italic;
+      color: #cbd5e1;
+    }
+
+    .assistant-reply {
+      margin-top: 30px;
+      padding: 25px;
+      border-radius: 20px;
+      background: rgba(99, 102, 241, 0.15);
+      border-left: 4px solid var(--voice-accent);
+      text-align: left;
+      display: none;
+    }
+
+    .citation {
+      margin-top: 15px;
+      font-size: 12px;
+      color: var(--voice-accent);
+      font-weight: 600;
+      opacity: 0.8;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 25px;
+      display: none;
+    }
+
+    .btn-confirm {
+      padding: 12px 30px;
+      background: var(--voice-accent);
+      border-radius: 12px;
+      font-weight: 700;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      padding: 12px 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      font-weight: 700;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    .agora-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 15px;
+      background: #099dfd;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="agora-badge">AGORA POWERED</div>
+
+  <div class="voice-container">
+    <div class="status-indicator" id="status">TẮT</div>
+    
+    <button class="mic-button" id="mic-btn">
+      🎤
+    </button>
+
+    <h2 style="font-family: 'Outfit'; margin-bottom: 10px;">Voice Assistant</h2>
+    <p style="color: #94a3b8; font-size: 14px;">Nhấn vào micro để ra lệnh (Ví dụ: "Tôi muốn nghỉ phép")</p>
+
+    <div class="transcription-box" id="transcription">
+      Hãy nói điều gì đó...
+    </div>
+
+    <div class="assistant-reply" id="reply">
+      <div id="reply-text"></div>
+      <div class="citation" id="citation-text"></div>
+    </div>
+
+    <div class="action-buttons" id="actions">
+      <button class="btn-confirm" onclick="handleConfirm()">XÁC NHẬN</button>
+      <button class="btn-cancel" onclick="handleCancel()">HỦY</button>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px; text-align: center;">
+    <a href="./index.html" style="color: #64748b; text-decoration: none; font-size: 14px;">← Quay lại hướng dẫn</a>
+  </div>
+
+  <script>
+    const micBtn = document.getElementById('mic-btn');
+    const statusText = document.getElementById('status');
+    const transcription = document.getElementById('transcription');
+    const reply = document.getElementById('reply');
+    const replyText = document.getElementById('reply-text');
+    const citationText = document.getElementById('citation-text');
+    const actions = document.getElementById('actions');
+
+    let isRecording = false;
+
+    micBtn.addEventListener('click', () => {
+      isRecording = !isRecording;
+      
+      if (isRecording) {
+        startRecording();
+      } else {
+        stopRecording();
+      }
+    });
+
+    function startRecording() {
+      micBtn.classList.add('active');
+      statusText.innerText = 'ĐANG NGHE...';
+      statusText.style.color = '#f43f5e';
+      transcription.innerText = 'Đang lắng nghe giọng nói của bạn...';
+      reply.style.display = 'none';
+      actions.style.display = 'none';
+    }
+
+    function stopRecording() {
+      micBtn.classList.remove('active');
+      statusText.innerText = 'ĐANG XỬ LÝ...';
+      statusText.style.color = '#fbbf24';
+      
+      // Giả lập STT và AI Response
+      setTimeout(() => {
+        transcription.innerText = '"Tôi muốn xin nghỉ phép 1 ngày vào thứ 6 này vì việc gia đình."';
+        
+        setTimeout(() => {
+          statusText.innerText = 'SẴN SÀNG';
+          statusText.style.color = '#6366f1';
+          
+          reply.style.display = 'block';
+          replyText.innerText = 'Theo chính sách nghỉ phép (Trang 12), bạn cần báo trước 24h. Bạn hoàn toàn đủ điều kiện. Bạn có muốn tôi soạn đơn và gửi cho sếp không?';
+          citationText.innerText = '📚 Nguồn: Chính sách nghỉ phép - Điều 12, Trang 5';
+          
+          actions.style.display = 'flex';
+          
+          // Giả lập TTS
+          console.log("Phát âm thanh: " + replyText.innerText);
+        }, 1000);
+      }, 1500);
+    }
+
+    function handleConfirm() {
+      alert("Đã gửi yêu cầu! Check email và Google Calendar của bạn.");
+      window.location.reload();
+    }
+
+    function handleCancel() {
+      window.location.reload();
+    }
+  </script>
+</body>
+
+</html>
